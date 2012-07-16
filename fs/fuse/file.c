@@ -753,13 +753,16 @@ static ssize_t fuse_file_aio_read(struct kiocb *iocb, const struct iovec *iov,
 	ssize_t ret_val;
 	struct inode *inode = iocb->ki_filp->f_mapping->host;
 	struct fuse_file *ff = iocb->ki_filp->private_data;
+	struct fuse_conn *fc = get_fuse_conn(inode);
 
-	if (pos + iov_length(iov, nr_segs) > i_size_read(inode)) {
+	/*
+	 * In auto invalidate mode, always update attributes on read.
+	 * Otherwise, only update if we attempt to read past EOF (to ensure
+	 * i_size is up to date).
+	 */
+	if (fc->auto_inval_data ||
+	    (pos + iov_length(iov, nr_segs) > i_size_read(inode))) {
 		int err;
-		/*
-		 * If trying to read past EOF, make sure the i_size
-		 * attribute is up-to-date.
-		 */
 		err = fuse_update_attributes(inode, NULL, iocb->ki_filp, NULL);
 		if (err)
 			return err;
