@@ -1348,6 +1348,17 @@ static void __queue_delayed_work(int cpu, struct workqueue_struct *wq,
 	BUG_ON(!list_empty(&work->entry));
 
 	/*
+	 * If @delay is 0, queue @dwork->work immediately.  This is for
+	 * both optimization and correctness.  The earliest @timer can
+	 * expire is on the closest next tick and delayed_work users depend
+	 * on that there's no such delay when @delay is 0.
+	 */
+	if (!delay) {
+		__queue_work(cpu, wq, &dwork->work);
+		return;
+	}
+
+	/*
 	 * This stores cwq for the moment, for the timer_fn.  Note that the
 	 * work's gcwq is preserved to allow reentrance detection for
 	 * delayed works.
@@ -1397,9 +1408,6 @@ bool queue_delayed_work_on(int cpu, struct workqueue_struct *wq,
 	struct work_struct *work = &dwork->work;
 	bool ret = false;
 	unsigned long flags;
-
-	if (!delay)
-		return queue_work_on(cpu, wq, &dwork->work);
 
 	/* read the comment in __queue_work() */
 	local_irq_save(flags);
