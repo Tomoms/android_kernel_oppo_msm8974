@@ -409,6 +409,8 @@ static void cpufreq_interactive_timer(unsigned long data)
 
 	new_load_pct = cpu_load * 100 / max(1, pcpu->prev_load);
 	pcpu->prev_load = cpu_load;
+	
+	cpufreq_notify_utilization(pcpu->policy, cpu_load);
 
 	if (cpu_load >= NEW_TASK_LOAD_T &&
 			new_load_pct >= NEW_TASK_RATIO) {
