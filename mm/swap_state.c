@@ -40,6 +40,7 @@ struct address_space swapper_spaces[MAX_SWAPFILES] = {
 	[0 ... MAX_SWAPFILES - 1] = {
 		.page_tree	= RADIX_TREE_INIT(GFP_ATOMIC|__GFP_NOWARN),
 		.a_ops		= &swap_aops,
+		.i_mmap_writable = ATOMIC_INIT(0),
 		.backing_dev_info = &swap_backing_dev_info,
 	}
 };
