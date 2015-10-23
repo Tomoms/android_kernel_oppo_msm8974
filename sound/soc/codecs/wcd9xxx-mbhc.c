@@ -2417,6 +2417,9 @@ static void wcd9xxx_mbhc_decide_swch_plug(struct wcd9xxx_mbhc *mbhc)
 {
 	enum wcd9xxx_mbhc_plug_type plug_type = PLUG_TYPE_INVALID;
 	bool current_source_enable;
+#ifdef CONFIG_MACH_OPPO
+	int i;
+#endif
 
 	pr_debug("%s: enter\n", __func__);
 
@@ -2438,12 +2441,14 @@ static void wcd9xxx_mbhc_decide_swch_plug(struct wcd9xxx_mbhc *mbhc)
 #ifdef CONFIG_MACH_OPPO
 		/*
 		 * Our hardware usually reports an invalid/incorrect plug type
-		 * on the very first poll, but the second poll often returns the
-		 * correct plug type, so poll twice in hopes of getting lucky and
-		 * significantly reducing detection latency using fast-detection.
+		 * on the very first poll, but the subsequent polls often return
+		 * the correct plug type, so poll multiple times in order to
+		 * improve immediate plug-detection accuracy.
 		 */
-		usleep(1000);
-		plug_type = wcd9xxx_codec_cs_get_plug_type(mbhc, false);
+		for (i = 0; i < 3; i++) {
+			usleep(5 * 1000);
+			plug_type = wcd9xxx_codec_cs_get_plug_type(mbhc, false);
+		}
 #endif
 		/*
 		 * For other plug types, the current source disable
@@ -2472,7 +2477,7 @@ static void wcd9xxx_mbhc_decide_swch_plug(struct wcd9xxx_mbhc *mbhc)
 	}
 
 #ifdef CONFIG_MACH_OPPO
-	mbhc->fast_detection = 0;
+	mbhc->fast_detection = PLUG_TYPE_NONE;
 
 	if (plug_type == PLUG_TYPE_HEADPHONE) {
 		mbhc->fast_detection = PLUG_TYPE_HEADPHONE;
@@ -2481,18 +2486,19 @@ static void wcd9xxx_mbhc_decide_swch_plug(struct wcd9xxx_mbhc *mbhc)
 			plug_type == PLUG_TYPE_HIGH_HPH) {
 		/*
 		 * Our hardware often mistakes a headset for high-hph,
-		 * so add high-hph to the fast-detection path and assume
-		 * it is a headset. We will defer to the correct-plug worker
-		 * anyway if this is a bad detection, so this is safe.
+		 * so just assume that it is a headset. We've already
+		 * polled four times by this point, so there is a good
+		 * chance that the peripheral is indeed a headset.
 		 */
 		mbhc->fast_detection = PLUG_TYPE_HEADSET;
 		wcd9xxx_find_plug_and_report(mbhc, PLUG_TYPE_HEADSET);
+		detection_pending = false;
 	}
 
-	if (mbhc->fast_detection != PLUG_TYPE_HEADSET)
+	if (mbhc->fast_detection != PLUG_TYPE_HEADSET) {
 		wcd9xxx_cleanup_hs_polling(mbhc);
-
-	wcd9xxx_schedule_hs_detect_plug(mbhc, &mbhc->correct_plug_swch);
+		wcd9xxx_schedule_hs_detect_plug(mbhc, &mbhc->correct_plug_swch);
+	}
 #else
 	if (plug_type == PLUG_TYPE_INVALID ||
 	    plug_type == PLUG_TYPE_GND_MIC_SWAP) {
@@ -3436,24 +3442,12 @@ static void wcd9xxx_correct_swch_plug(struct work_struct *work)
 	}
 
 #ifdef CONFIG_MACH_OPPO
-	if (mbhc->fast_detection) {
-		/* Change to the correct plug type if fast-detection was wrong */
-		if (plug_type != mbhc->fast_detection) {
-			mbhc->fast_detection = 0;
-			wcd9xxx_do_plug_correction(mbhc, retry, plug_type,
-					&correction, current_source_enable,
-					false);
-		} else if (plug_type == PLUG_TYPE_HEADSET) {
-			WCD9XXX_BCL_LOCK(mbhc->resmgr);
-			if (mbhc->micbias_enable && mbhc->micbias_enable_cb) {
-				/* Reset mic bias to fix static background noise */
-				mbhc->micbias_enable_cb(mbhc->codec, true,
-							mbhc->mbhc_cfg->micbias);
-			}
-			/* Restart button polling */
-			wcd9xxx_start_hs_polling(mbhc);
-			WCD9XXX_BCL_UNLOCK(mbhc->resmgr);
-		}
+	/* Change to the correct plug type if fast-detection was wrong */
+	if (mbhc->fast_detection && plug_type != mbhc->fast_detection) {
+		mbhc->fast_detection = 0;
+		wcd9xxx_do_plug_correction(mbhc, retry, plug_type,
+				&correction, current_source_enable,
+				false);
 	}
 #endif
 
