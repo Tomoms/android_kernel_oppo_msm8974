@@ -383,7 +383,7 @@ struct wcd9xxx_mbhc {
 	bool force_linein;
 
 #ifdef CONFIG_MACH_OPPO
-	int fast_detection;
+	enum wcd9xxx_mbhc_plug_type fast_detection;
 #endif
 };
 
