@@ -955,7 +955,7 @@ remove_hrtimer(struct hrtimer *timer, struct hrtimer_clock_base *base)
 }
 
 int __hrtimer_start_range_ns(struct hrtimer *timer, ktime_t tim,
-		unsigned long delta_ns, const enum hrtimer_mode mode,
+		u64 delta_ns, const enum hrtimer_mode mode,
 		int wakeup)
 {
 	struct hrtimer_clock_base *base, *new_base;
@@ -1027,7 +1027,7 @@ int __hrtimer_start_range_ns(struct hrtimer *timer, ktime_t tim,
  *  1 when the timer was active
  */
 int hrtimer_start_range_ns(struct hrtimer *timer, ktime_t tim,
-		unsigned long delta_ns, const enum hrtimer_mode mode)
+		u64 delta_ns, const enum hrtimer_mode mode)
 {
 	return __hrtimer_start_range_ns(timer, tim, delta_ns, mode, 1);
 }
@@ -1591,7 +1591,7 @@ long hrtimer_nanosleep(struct timespec *rqtp, struct timespec __user *rmtp,
 	struct restart_block *restart;
 	struct hrtimer_sleeper t;
 	int ret = 0;
-	unsigned long slack;
+	u64 slack;
 
 	slack = current->timer_slack_ns;
 	if (rt_task(current))
@@ -1780,7 +1780,7 @@ void __init hrtimers_init(void)
  * @clock:	timer clock, CLOCK_MONOTONIC or CLOCK_REALTIME
  */
 int __sched
-schedule_hrtimeout_range_clock(ktime_t *expires, unsigned long delta,
+schedule_hrtimeout_range_clock(ktime_t *expires, u64 delta,
 			       const enum hrtimer_mode mode, int clock)
 {
 	struct hrtimer_sleeper t;
@@ -1851,7 +1851,7 @@ schedule_hrtimeout_range_clock(ktime_t *expires, unsigned long delta,
  *
  * Returns 0 when the timer has expired otherwise -EINTR
  */
-int __sched schedule_hrtimeout_range(ktime_t *expires, unsigned long delta,
+int __sched schedule_hrtimeout_range(ktime_t *expires, u64 delta,
 				     const enum hrtimer_mode mode)
 {
 	return schedule_hrtimeout_range_clock(expires, delta, mode,
