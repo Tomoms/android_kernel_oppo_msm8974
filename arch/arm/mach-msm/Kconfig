@@ -3051,6 +3051,14 @@ config AUTOSMP
 	  Automatically hotplugs the multiple CPU cores based on
 	  CPU load and suspend state.
 
+config BRICKED_HOTPLUG
+	bool "Enable kernel based mpdecision"
+	depends on MSM_RUN_QUEUE_STATS
+	default y
+	help
+		This enables kernel based multi core control.
+		(up/down hotplug based on load)
+
 endif
 
 config KERNEL_TEXT_MPU_PROT
