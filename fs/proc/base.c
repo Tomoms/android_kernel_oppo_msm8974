@@ -2404,6 +2404,12 @@ static ssize_t timerslack_ns_write(struct file *file, const char __user *buf,
 		}
 	}
 
+	err = security_task_setscheduler(p);
+	if (err) {
+		count = err;
+		goto out;
+	}
+
 	task_lock(p);
 	if (slack_ns == 0)
 		p->timer_slack_ns = p->default_timer_slack_ns;
@@ -2437,6 +2443,10 @@ static int timerslack_ns_show(struct seq_file *m, void *v)
 		if (err)
 			goto out;
 	}
+
+	err = security_task_getscheduler(p);
+	if (err)
+		goto out;
 
 	task_lock(p);
 	seq_printf(m, "%llu\n", p->timer_slack_ns);
