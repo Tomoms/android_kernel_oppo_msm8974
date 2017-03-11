@@ -1382,7 +1382,8 @@ qpnp_chg_vbatdet_lo_irq_handler(int irq, void *_chip)
 
 	pr_debug("chg_done chg_sts: 0x%x triggered\n", chg_sts);
 	if (!chip->charging_disabled && (chg_sts & FAST_CHG_ON_IRQ)) {
-		schedule_delayed_work(&chip->eoc_work,
+		queue_delayed_work(system_power_efficient_wq,
+			&chip->eoc_work,
 			msecs_to_jiffies(EOC_CHECK_PERIOD_MS));
 		pm_stay_awake(chip->dev);
 	}
@@ -1426,7 +1427,9 @@ qpnp_chg_usb_chg_gone_irq_handler(int irq, void *_chip)
 		qpnp_chg_charge_en(chip, 0);
 
 		qpnp_chg_force_run_on_batt(chip, 1);
-		schedule_delayed_work(&chip->arb_stop_work,
+
+		queue_delayed_work(system_power_efficient_wq,
+			&chip->arb_stop_work,
 			msecs_to_jiffies(ARB_STOP_WORK_MS));
 	}
 
@@ -1662,8 +1665,9 @@ qpnp_chg_coarse_det_usb_irq_handler(int irq, void *_chip)
 				return rc;
 			}
 			ovp_ctl = ovp_ctl & USB_VALID_DEBOUNCE_TIME_MASK;
-			schedule_delayed_work(&chip->usbin_health_check,
-					msecs_to_jiffies(debounce[ovp_ctl]));
+			queue_delayed_work(system_power_efficient_wq,
+				&chip->usbin_health_check,
+				msecs_to_jiffies(debounce[ovp_ctl]));
 		} else {
 			/* usb coarse-det rising edge, set the usb psy health
 			status to unknown */
@@ -1779,7 +1783,8 @@ qpnp_chg_usb_usbin_valid_irq_handler(int irq, void *_chip)
 				}
 			}
 
-			schedule_delayed_work(&chip->eoc_work,
+			queue_delayed_work(system_power_efficient_wq,
+				&chip->eoc_work,
 				msecs_to_jiffies(EOC_CHECK_PERIOD_MS));
 			schedule_work(&chip->soc_check_work);
 		}
@@ -1958,7 +1963,8 @@ qpnp_chg_dc_dcin_valid_irq_handler(int irq, void *_chip)
 					qpnp_chg_is_otg_en_set(chip))) {
 			chip->chg_done = false;
 		} else {
-			schedule_delayed_work(&chip->eoc_work,
+			queue_delayed_work(system_power_efficient_wq,
+				&chip->eoc_work,
 				msecs_to_jiffies(EOC_CHECK_PERIOD_MS));
 			schedule_work(&chip->soc_check_work);
 		}
@@ -2112,7 +2118,8 @@ qpnp_chg_chgr_chg_fastchg_irq_handler(int irq, void *_chip)
 			}
 
 			if (!chip->charging_disabled) {
-				schedule_delayed_work(&chip->eoc_work,
+				queue_delayed_work(system_power_efficient_wq,
+					&chip->eoc_work,
 					msecs_to_jiffies(EOC_CHECK_PERIOD_MS));
 				pm_stay_awake(chip->dev);
 			}
@@ -3850,7 +3857,8 @@ qpnp_eoc_work(struct work_struct *work)
 	}
 
 check_again_later:
-	schedule_delayed_work(&chip->eoc_work,
+	queue_delayed_work(system_power_efficient_wq,
+		&chip->eoc_work,
 		msecs_to_jiffies(EOC_CHECK_PERIOD_MS));
 	return;
 
@@ -5580,7 +5588,8 @@ qpnp_charger_probe(struct spmi_device *spmi)
 	if (qpnp_chg_is_usb_chg_plugged_in(chip))
 		power_supply_set_online(chip->usb_psy, 1);
 
-	schedule_delayed_work(&chip->aicl_check_work,
+	queue_delayed_work(system_power_efficient_wq,
+		&chip->aicl_check_work,
 		msecs_to_jiffies(EOC_CHECK_PERIOD_MS));
 	pr_info("success chg_dis = %d, bpd = %d, usb = %d, dc = %d b_health = %d batt_present = %d\n",
 			chip->charging_disabled,
