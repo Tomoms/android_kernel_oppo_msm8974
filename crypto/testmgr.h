@@ -41,7 +41,7 @@ struct hash_testvec {
 	char *plaintext;
 	char *digest;
 	unsigned char tap[MAX_TAP];
-	unsigned char psize;
+	unsigned short psize;
 	unsigned char np;
 	unsigned char ksize;
 };
