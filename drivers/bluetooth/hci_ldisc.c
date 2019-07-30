@@ -252,6 +252,15 @@ static void hci_uart_destruct(struct hci_dev *hdev)
 	kfree(hdev->driver_data);
 }
 
+/* Check the underlying device or tty has flow control support */
+bool hci_uart_has_flow_control(struct hci_uart *hu)
+{
+	if (hu->tty->driver->ops->tiocmget && hu->tty->driver->ops->tiocmset)
+		return true;
+
+	return false;
+}
+
 /* ------ LDISC part ------ */
 /* hci_uart_tty_open
  * 
