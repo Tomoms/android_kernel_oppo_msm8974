@@ -2104,10 +2104,10 @@ static const struct soc_enum dec10_mux_enum =
 	SOC_ENUM_SINGLE(TAIKO_A_CDC_CONN_TX_B4_CTL, 0, 8, dec10_mux_text);
 
 static const struct soc_enum anc1_mux_enum =
-	SOC_ENUM_SINGLE(TAIKO_A_CDC_CONN_ANC_B1_CTL, 0, 16, anc_mux_text);
+	SOC_ENUM_SINGLE(TAIKO_A_CDC_CONN_ANC_B1_CTL, 0, 15, anc_mux_text);
 
 static const struct soc_enum anc2_mux_enum =
-	SOC_ENUM_SINGLE(TAIKO_A_CDC_CONN_ANC_B1_CTL, 4, 16, anc_mux_text);
+	SOC_ENUM_SINGLE(TAIKO_A_CDC_CONN_ANC_B1_CTL, 4, 15, anc_mux_text);
 
 static const struct soc_enum anc1_fb_mux_enum =
 	SOC_ENUM_SINGLE(TAIKO_A_CDC_CONN_ANC_B2_CTL, 0, 3, anc1_fb_mux_text);
