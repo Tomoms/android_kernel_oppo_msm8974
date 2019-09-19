@@ -329,7 +329,7 @@ include $(srctree)/scripts/Kbuild.include
 # Make variables (CC, etc...)
 
 AS		= $(CROSS_COMPILE)as
-LD		= $(CROSS_COMPILE)ld
+LD		= $(CROSS_COMPILE)ld.gold -O3 --sort-common --strip-debug
 CC		= $(CROSS_COMPILE)gcc
 CPP		= $(CC) -E
 AR		= $(CROSS_COMPILE)ar
@@ -559,6 +559,14 @@ endif # $(dot-config)
 all: vmlinux
 
 KBUILD_CFLAGS	+= $(call cc-disable-warning,maybe-uninitialized,)
+
+####################
+# Optimization flags
+####################
+
+KBUILD_CFLAGS   += $(call cc-option, -g0,)
+
+KBUILD_AFLAGS   += $(call cc-option, -g0,)
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= -Os
