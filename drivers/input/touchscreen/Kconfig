@@ -7,7 +7,7 @@ menuconfig INPUT_TOUCHSCREEN
 	  Say Y here, and a list of supported touchscreens will be displayed.
 	  This option doesn't affect the kernel.
 
-	  If unsure, say Y.
+	  If unsure, say Y. 
 
 if INPUT_TOUCHSCREEN
 
@@ -1035,6 +1035,9 @@ config TOUCHSCREEN_SYNAPTICS_S3508_I2C_RMI
 	depends on I2C
 	help
 	  This enables support for s3508 I2C RMI touchscreen devices.
+ 
+config STATE_NOTIFIER
+        bool "State Notifier"
 
 source "drivers/input/touchscreen/gt9xx/Kconfig"
 
