@@ -33,7 +33,7 @@
 #define DEFAULT_NR_CPUS_BOOSTED		2
 #define DEFAULT_UPDATE_RATE			50
 #define MIN_INPUT_INTERVAL			150 * 1000L
-#define DEFAULT_MIN_BOOST_FREQ		1728000
+#define DEFAULT_MIN_BOOST_FREQ		1267200
 
 #if DEBUG
 struct asmp_cpudata_t {
@@ -67,7 +67,7 @@ static struct asmp_param_struct {
 	.min_cpus = 1,
 	.cpufreq_up = 90,
 	.cpufreq_down = 50,
-	.cycle_up = 1,
+	.cycle_up = 2,
 	.cycle_down = 1,
 	.min_boost_freq = DEFAULT_MIN_BOOST_FREQ,
 	.cpus_boosted = DEFAULT_NR_CPUS_BOOSTED,
