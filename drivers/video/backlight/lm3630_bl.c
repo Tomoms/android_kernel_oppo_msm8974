@@ -34,6 +34,7 @@
 #ifdef CONFIG_STATE_NOTIFIER
 #include <linux/state_notifier.h>
 #endif /*CONFIG_STATE_NOTIFIER*/
+#include <linux/display_state.h>
 #define REG_CTRL	0x00
 #define REG_CONFIG	0x01
 #define REG_BRT_A	0x03
@@ -54,6 +55,13 @@
 #define INT_DEBOUNCE_MSEC	10
 
 static struct lm3630_chip_data *lm3630_pchip;
+
+bool display_on = true;
+
+bool is_display_on()
+{
+	return display_on;
+}
 
 struct lm3630_chip_data {
 	struct device *dev;
@@ -207,12 +215,16 @@ static int lm3630_intr_config(struct lm3630_chip_data *pchip)
 #ifdef CONFIG_MACH_OPPO
 #ifdef CONFIG_STATE_NOTIFIER
 	// if display is switched off
-	if (bl_level == 0)
+	if (bl_level == 0) {
+		display_on = false;
 		state_suspend();
+	}
 
 	// if display is switched on
-	if (bl_level != 0 && pre_brightness == 0)
+	if (bl_level != 0 && pre_brightness == 0) {
+		display_on = true;
 		state_resume();
+	}
 #endif /*CONFIG_STATE_NOTIFIER*/
 
 /* Xiaori.Yuan@Mobile Phone Software Dept.Driver, 2014/04/28  Add for add log for 14001 black screen */
