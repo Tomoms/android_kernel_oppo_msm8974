@@ -706,20 +706,20 @@ static inline void clear_inode(struct inode *inode)
 	end_writeback(inode);
 }
 
-static int sdfat_revalidate(struct dentry *dentry, unsigned int flags)
+static int sdfat_revalidate(struct dentry *dentry, struct nameidata *nd)
 {
-	if (flags & LOOKUP_RCU)
+	if (nd && nd->flags & LOOKUP_RCU)
 		return -ECHILD;
 
 	return __sdfat_revalidate(dentry);
 }
 
-static int sdfat_revalidate_ci(struct dentry *dentry, unsigned int flags)
+static int sdfat_revalidate_ci(struct dentry *dentry, struct nameidata *nd)
 {
-	if (flags & LOOKUP_RCU)
+	if (nd && nd->flags & LOOKUP_RCU)
 		return -ECHILD;
 
-	return __sdfat_revalidate_ci(dentry, flags);
+	return __sdfat_revalidate_ci(dentry, nd ? nd->flags : 0);
 
 }
 
@@ -755,7 +755,7 @@ static struct dentry *sdfat_lookup(struct inode *dir, struct dentry *dentry,
 }
 #else /* LINUX_VERSION_CODE < KERNEL_VERSION(3, 6, 0) */
 static struct dentry *sdfat_lookup(struct inode *dir, struct dentry *dentry,
-						   unsigned int flags)
+						   struct nameidata *nd)
 {
 	return __sdfat_lookup(dir, dentry);
 }
@@ -1055,7 +1055,7 @@ static int sdfat_create(struct inode *dir, struct dentry *dentry, umode_t mode,
 }
 #elif LINUX_VERSION_CODE >= KERNEL_VERSION(3, 4, 0)
 static int sdfat_create(struct inode *dir, struct dentry *dentry, umode_t mode,
-			bool excl)
+			struct nameidata *nd)
 {
 	return __sdfat_create(dir, dentry);
 }
@@ -5165,3 +5165,4 @@ module_exit(exit_sdfat_fs);
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("FAT/exFAT filesystem support");
 MODULE_AUTHOR("Samsung Electronics Co., Ltd.");
+
