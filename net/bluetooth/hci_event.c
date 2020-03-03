@@ -3519,6 +3519,11 @@ void hci_event_packet(struct hci_dev *hdev, struct sk_buff *skb)
 
 	BT_DBG("");
 
+	if (!event) {
+		BT_INFO("Received unexpected HCI Event 00000000");
+		goto done;
+	}
+
 	skb_pull(skb, HCI_EVENT_HDR_SIZE);
 
 	switch (event) {
@@ -3711,6 +3716,7 @@ void hci_event_packet(struct hci_dev *hdev, struct sk_buff *skb)
 		break;
 	}
 
+done:
 	kfree_skb(skb);
 	hdev->stat.evt_rx++;
 }
