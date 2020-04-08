@@ -616,9 +616,6 @@ KBUILD_CFLAGS	+= $(call cc-disable-warning,maybe-uninitialized,)
 ####################
 
 KBUILD_CFLAGS   += $(call cc-option, -g0,) \
-		   $(call cc-option, -mcpu=cortex-a15,) \
-		   $(call cc-option, -mfpu=neon-vfpv4,) \
-		   $(call cc-option, -mvectorize-with-neon-quad,) \
 		   $(call cc-option, -fsingle-precision-constant,) \
 		   $(call cc-option, -fgcse-after-reload,) \
 		   $(call cc-option, -fpredictive-commoning,)
