@@ -615,18 +615,13 @@ KBUILD_CFLAGS	+= $(call cc-disable-warning,maybe-uninitialized,)
 # Optimization flags
 ####################
 
-GRAPHITE	= -fgraphite -floop-flatten -floop-parallelize-all \
-		  -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block \
-		  -floop-nest-optimize
-
 KBUILD_CFLAGS   += $(call cc-option, -g0,) \
 		   $(call cc-option, -mcpu=cortex-a15,) \
 		   $(call cc-option, -mfpu=neon-vfpv4,) \
 		   $(call cc-option, -mvectorize-with-neon-quad,) \
 		   $(call cc-option, -fsingle-precision-constant,) \
 		   $(call cc-option, -fgcse-after-reload,) \
-		   $(call cc-option, -fpredictive-commoning,) \
-		   $(GRAPHITE)
+		   $(call cc-option, -fpredictive-commoning,)
 
 #######################
 # Disable some warnings
