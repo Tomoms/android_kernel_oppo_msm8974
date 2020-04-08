@@ -615,10 +615,7 @@ KBUILD_CFLAGS	+= $(call cc-disable-warning,maybe-uninitialized,)
 # Optimization flags
 ####################
 
-KBUILD_CFLAGS   += $(call cc-option, -g0,) \
-		   $(call cc-option, -fsingle-precision-constant,) \
-		   $(call cc-option, -fgcse-after-reload,) \
-		   $(call cc-option, -fpredictive-commoning,)
+KBUILD_CFLAGS   += $(call cc-option, -g0,)
 
 KBUILD_AFLAGS   += $(call cc-option, -g0,)
 
