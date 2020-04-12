@@ -250,7 +250,7 @@ HOSTCXXFLAGS = -O2
 
 ifeq ($(shell $(HOSTCC) -v 2>&1 | grep -c "clang version"), 1)
 HOSTCFLAGS += -Wno-unused-value -Wno-unused-parameter \
-	      -Wno-missing-field-initializers
+	      -Wno-missing-field-initializers -Wno-string-plus-int
 endif
 
 # Decide whether to build built-in, modular, or both.
@@ -407,11 +407,14 @@ KBUILD_CPPFLAGS := -D__KERNEL__  $(CLANG_FLAGS)
 
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-common -fno-strict-aliasing \
-   		   -Werror-implicit-function-declaration \
+		   -Werror-implicit-function-declaration \
 		   -Wno-format-security -Wno-attributes \
 		   -std=gnu89 \
+		   -Wno-uninitialized -Wno-unused-function \
+		   -Wno-int-in-bool-context \
+		   -Wno-parentheses-equality -Wno-strncat-size \
 		   $(ARM_ARCH_OPT) \
-   		   $(CLANG_FLAGS)
+		   $(CLANG_FLAGS)
 
 KBUILD_AFLAGS_KERNEL := $(ARM_ARCH_OPT)
 KBUILD_CFLAGS_KERNEL := $(ARM_ARCH_OPT)
