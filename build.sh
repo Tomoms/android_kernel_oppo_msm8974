@@ -5,10 +5,9 @@ export CROSS_COMPILE=/run/media/tfonda/HDD/gcc-arm-9.2-2019.12-x86_64-arm-none-l
 
 make lineageos_bacon_defconfig
 
-make -j5
+make -j1
 ../dtbToolCM -2 -o ../AnyKernel3/dt -s 2048 -p scripts/dtc/ arch/arm/boot/
 
-../dtbToolCM -2 -o ../AnyKernel3/dtb -s 2048 -p scripts/dtc/ arch/arm/boot/
 cp arch/arm/boot/zImage ../AnyKernel3/
 cd ../AnyKernel3
-zip -r ../$1 anykernel.sh dtb META-INF/ tools/ zImage
+zip -r ../$1 anykernel.sh dt META-INF/ tools/ zImage
