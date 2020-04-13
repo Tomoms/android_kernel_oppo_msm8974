@@ -620,7 +620,13 @@ KBUILD_CFLAGS	+= -Os
 else
 KBUILD_CFLAGS	+= -O3
 ifeq ($(cc-name),clang)
-KBUILD_CFLAGS	+= -mllvm -polly
+KBUILD_CFLAGS	+= -mllvm -polly \
+		   -mllvm -polly-run-dce \
+		   -mllvm -polly-run-inliner \
+		   -mllvm -polly-opt-fusion=max \
+		   -mllvm -polly-ast-use-context \
+		   -mllvm -polly-detect-keep-going \
+		   -mllvm -polly-vectorizer=stripmine
 endif
 endif
 
