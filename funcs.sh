@@ -2,11 +2,12 @@
 setenv () {
 	export ARCH=arm
 	export SUBARCH=arm
-	export CROSS_COMPILE=/run/media/tfonda/HDD/android/arm32-gcc/bin/arm-eabi-
+	export CROSS_COMPILE="/run/media/tfonda/HDD/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-"
+	export LD_LIBRARY_PATH="/run/media/tfonda/HDD/android/lolz_clang/lib"
 }
 
 checkenv () {
-	if [[ $ARCH != "arm" ]] || [[ $SUBARCH != "arm" ]] || [[ $CROSS_COMPILE != "/run/media/tfonda/HDD/android/arm32-gcc/bin/arm-eabi-" ]]; then
+	if [[ $ARCH != "arm" ]] || [[ $SUBARCH != "arm" ]] || [[ $CROSS_COMPILE != "/run/media/tfonda/HDD/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-" ]] || [[ $LD_LIBRARY_PATH != "/run/media/tfonda/HDD/android/lolz_clang/lib" ]]; then
 		echo "Environment variables are unset!"
 		return 1
 	fi
@@ -14,49 +15,49 @@ checkenv () {
 }
 
 fullclean () {
-	setenv
+	#setenv
 	if ! checkenv; then
 		echo "Aborting!"
 		return 1
 	fi
 	echo "Performing a full clean..."
-	make mrproper
+	make mrproper CC=/run/media/tfonda/HDD/android/lolz_clang/bin/clang HOSTCC=/run/media/tfonda/HDD/android/lolz_clang/bin/clang
 }
 
 clean () {
-	setenv
+	#setenv
 	if ! checkenv; then
 		echo "Aborting!"
 		return 1
 	fi
 	echo "Cleaning..."
-	make clean
+	make clean CC=/run/media/tfonda/HDD/android/lolz_clang/bin/clang HOSTCC=/run/media/tfonda/HDD/android/lolz_clang/bin/clang
 }
 
 mkcfg () {
-	setenv
+	#setenv
 	if ! checkenv; then
 		echo "Aborting!"
 		return 1
 	fi
 	if [ -f ".config" ]; then
 		echo ".config exists, running make oldconfig"
-		make oldconfig
+		make oldconfig CC=/run/media/tfonda/HDD/android/lolz_clang/bin/clang HOSTCC=/run/media/tfonda/HDD/android/lolz_clang/bin/clang
 	else
 		echo ".config not found"
-		make lineageos_bacon_defconfig
+		make lineageos_bacon_defconfig CC=/run/media/tfonda/HDD/android/lolz_clang/bin/clang HOSTCC=/run/media/tfonda/HDD/android/lolz_clang/bin/clang
 	fi
 }
 
 editcfg () {
-	setenv
+	#setenv
 	if ! checkenv; then
 		echo "Aborting!"
 		return 1
 	fi
 	if [ -f ".config" ]; then
 		echo ".config exists"
-		make nconfig
+		make nconfig CC=/run/media/tfonda/HDD/android/lolz_clang/bin/clang HOSTCC=/run/media/tfonda/HDD/android/lolz_clang/bin/clang
 	else
 		echo ".config not found, run mkcfg first!"
 		return 1
@@ -64,17 +65,17 @@ editcfg () {
 }
 
 savecfg () {
-	setenv
+	#setenv
 	if ! checkenv; then
 		echo "Aborting!"
 		return 1
 	fi
-	make savedefconfig
+	make savedefconfig CC=/run/media/tfonda/HDD/android/lolz_clang/bin/clang HOSTCC=/run/media/tfonda/HDD/android/lolz_clang/bin/clang
 	mv defconfig arch/arm/configs/lineageos_bacon_defconfig
 }
 
 build () {
-	setenv
+	#setenv
 	if ! checkenv; then
 		echo "Aborting!"
 		return 1
@@ -84,7 +85,7 @@ build () {
 		return 1
 	fi
 	echo "Running make..."
-	make -j$1
+	make -j$1 CC=/run/media/tfonda/HDD/android/lolz_clang/bin/clang HOSTCC=/run/media/tfonda/HDD/android/lolz_clang/bin/clang
 	../dtbToolCM -2 -o ../AnyKernel3/dt -s 2048 -p scripts/dtc/ arch/arm/boot/
 }
 
