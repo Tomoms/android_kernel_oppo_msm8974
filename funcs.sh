@@ -2,11 +2,11 @@
 setenv () {
 	export ARCH=arm
 	export SUBARCH=arm
-	export CROSS_COMPILE=/run/media/tfonda/HDD/android/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9/bin/arm-linux-androidkernel-
+	export CROSS_COMPILE=/run/media/tfonda/HDD/android/arm32-gcc/bin/arm-eabi-
 }
 
 checkenv () {
-	if [[ $ARCH != "arm" ]] || [[ $SUBARCH != "arm" ]] || [[ $CROSS_COMPILE != "/run/media/tfonda/HDD/android/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9/bin/arm-linux-androidkernel-" ]]; then
+	if [[ $ARCH != "arm" ]] || [[ $SUBARCH != "arm" ]] || [[ $CROSS_COMPILE != "/run/media/tfonda/HDD/android/arm32-gcc/bin/arm-eabi-" ]]; then
 		echo "Environment variables are unset!"
 		return 1
 	fi
