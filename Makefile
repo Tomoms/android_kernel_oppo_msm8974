@@ -593,7 +593,7 @@ KBUILD_CFLAGS   += $(call cc-option, -g0,) \
 # Disable some warnings
 #######################
 
-KBUILD_CFLAGS	+= 	-Wno-maybe-uninitialized \
+KBUILD_CFLAGS	+=	-Wno-maybe-uninitialized \
 			-Wno-incompatible-pointer-types \
 			-Wno-format-security \
 			-Wno-discarded-array-qualifiers \
@@ -610,7 +610,12 @@ KBUILD_CFLAGS	+= 	-Wno-maybe-uninitialized \
 			-Wno-parentheses \
 			-Wno-format-overflow \
 			-Wno-int-in-bool-context \
-			-Wno-switch-unreachable 
+			-Wno-switch-unreachable
+
+KBUILD_CFLAGS	+=	--param inline-min-speedup=15 \
+			--param max-inline-insns-single=200 \
+			--param max-inline-insns-auto=30 \
+			--param early-inlining-insns=14
 
 KBUILD_AFLAGS   += $(call cc-option, -g0,)
 
