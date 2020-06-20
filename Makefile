@@ -623,34 +623,6 @@ KBUILD_CFLAGS   += $(call cc-option, -g0,) \
 		   $(call cc-option, -fgcse-after-reload,) \
 		   $(call cc-option, -fpredictive-commoning,)
 
-#######################
-# Disable some warnings
-#######################
-
-KBUILD_CFLAGS	+=	-Wno-maybe-uninitialized \
-			-Wno-incompatible-pointer-types \
-			-Wno-format-security \
-			-Wno-discarded-array-qualifiers \
-			-Wno-memset-transposed-args \
-			-Wno-bool-compare \
-			-Wno-logical-not-parentheses \
-			-Wno-switch-bool \
-			-Wno-array-bounds \
-			-Wno-misleading-indentation \
-			-Wno-format-truncation \
-			-Wno-bool-operation \
-			-Wno-duplicate-decl-specifier \
-			-Wno-memset-elt-size \
-			-Wno-parentheses \
-			-Wno-format-overflow \
-			-Wno-int-in-bool-context \
-			-Wno-switch-unreachable
-
-KBUILD_CFLAGS	+=	--param inline-min-speedup=15 \
-			--param max-inline-insns-single=200 \
-			--param max-inline-insns-auto=30 \
-			--param early-inlining-insns=14
-
 KBUILD_AFLAGS   += $(call cc-option, -g0,)
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
