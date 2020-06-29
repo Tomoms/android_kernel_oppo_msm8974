@@ -2747,10 +2747,6 @@ struct vm_area_struct *copy_vma(struct vm_area_struct **vmap,
 			INIT_LIST_HEAD(&new_vma->anon_vma_chain);
 			if (anon_vma_clone(new_vma, vma))
 				goto out_free_mempol;
-			vma_set_policy(new_vma, pol);
-			new_vma->vm_start = addr;
-			new_vma->vm_end = addr + len;
-			new_vma->vm_pgoff = pgoff;
 			if (new_vma->vm_file) {
 				get_file(new_vma->vm_file);
 				if (vma->vm_flags & VM_EXECUTABLE)
