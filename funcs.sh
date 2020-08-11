@@ -2,11 +2,11 @@
 setenv () {
 	export ARCH=arm
 	export SUBARCH=arm
-	export CROSS_COMPILE=/run/media/tfonda/HDD/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-
+	export CROSS_COMPILE=/run/media/tfonda/HDD/android/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9/bin/arm-linux-androidkernel-
 }
 
 checkenv () {
-	if [[ $ARCH != "arm" ]] || [[ $SUBARCH != "arm" ]] || [[ $CROSS_COMPILE != "/run/media/tfonda/HDD/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin/arm-none-linux-gnueabihf-" ]]; then
+	if [[ $ARCH != "arm" ]] || [[ $SUBARCH != "arm" ]] || [[ $CROSS_COMPILE != "/run/media/tfonda/HDD/android/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9/bin/arm-linux-androidkernel-" ]]; then
 		echo "Environment variables are unset!"
 		return 1
 	fi
@@ -94,5 +94,5 @@ mkzip () {
 		return 1
 	fi
 	cp arch/arm/boot/zImage ../AnyKernel3/
-	(cd ../AnyKernel3 && zip -r ../$1 anykernel.sh dt META-INF/ tools/ zImage)
+	(cd ../AnyKernel3 && zip -r ../$1 *)
 }
