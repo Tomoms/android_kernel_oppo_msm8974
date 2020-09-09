@@ -576,6 +576,8 @@ KBUILD_CFLAGS	+=	--param inline-min-speedup=15 \
 			--param max-inline-insns-auto=30 \
 			--param early-inlining-insns=14
 
+KBUILD_CFLAGS	+=	-Wno-address-of-packed-member
+
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= -Os
 else
