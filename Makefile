@@ -578,6 +578,9 @@ KBUILD_CFLAGS	+=	--param inline-min-speedup=15 \
 
 KBUILD_CFLAGS	+=	-Wno-address-of-packed-member
 
+KBUILD_CFLAGS	+=	-mcpu=cortex-a15 \
+			-mfpu=neon-vfpv4
+
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= -Os
 else
