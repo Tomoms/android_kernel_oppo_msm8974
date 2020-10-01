@@ -3044,11 +3044,20 @@ config CHARGE_LEVEL
 	help
 	  Allows configuration of ac and usb charging levels
 
+config ASMP
+	bool "Multi-core automatic hotplug support"
+	depends on SMP
+	default y
+	help
+	  Automatically hotplugs the multiple cpu cores on and off
+	  based on cpu load and suspend state
+
 config HAS_MACH_MEMUTILS
 	default n
 	bool "Motorola MSM memcpy enhancements"
 	help
 	Faster memcpy performance for Krait
+
 endif
 
 config KERNEL_TEXT_MPU_PROT
