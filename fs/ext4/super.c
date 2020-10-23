@@ -157,38 +157,6 @@ static int ext4_verify_csum_type(struct super_block *sb,
 	return es->s_checksum_type == EXT4_CRC32C_CHKSUM;
 }
 
-static __le32 ext4_superblock_csum(struct super_block *sb,
-				   struct ext4_super_block *es)
-{
-	struct ext4_sb_info *sbi = EXT4_SB(sb);
-	int offset = offsetof(struct ext4_super_block, s_checksum);
-	__u32 csum;
-
-	csum = ext4_chksum(sbi, ~0, (char *)es, offset);
-
-	return cpu_to_le32(csum);
-}
-
-int ext4_superblock_csum_verify(struct super_block *sb,
-				struct ext4_super_block *es)
-{
-	if (!EXT4_HAS_RO_COMPAT_FEATURE(sb,
-				       EXT4_FEATURE_RO_COMPAT_METADATA_CSUM))
-		return 1;
-
-	return es->s_checksum == ext4_superblock_csum(sb, es);
-}
-
-void ext4_superblock_csum_set(struct super_block *sb,
-			      struct ext4_super_block *es)
-{
-	if (!EXT4_HAS_RO_COMPAT_FEATURE(sb,
-		EXT4_FEATURE_RO_COMPAT_METADATA_CSUM))
-		return;
-
-	es->s_checksum = ext4_superblock_csum(sb, es);
-}
-
 void *ext4_kvmalloc(size_t size, gfp_t flags)
 {
 	void *ret;
