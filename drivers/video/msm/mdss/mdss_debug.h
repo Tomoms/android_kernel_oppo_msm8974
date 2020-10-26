@@ -83,7 +83,6 @@ void mdss_dump_reg(char __iomem *base, int len);
 void mdss_xlog_tout_handler(const char *name, ...);
 #else
 static inline int mdss_debugfs_init(struct mdss_data_type *mdata) { return 0; }
-static inline int mdss_debugfs_remove(struct mdss_data_type *mdata) { return 0; }
 static inline int mdss_debug_register_base(const char *name, void __iomem *base,
 					size_t max_offset) { return 0; }
 static inline int mdss_misr_set(struct mdss_data_type *mdata,
