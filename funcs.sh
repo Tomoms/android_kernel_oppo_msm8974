@@ -2,11 +2,11 @@
 setenv () {
 	export ARCH=arm
 	export SUBARCH=arm
-	export CROSS_COMPILE=/run/media/tfonda/HDD/android/arm32-gcc/bin/arm-eabi-
+	export CROSS_COMPILE=../../arm32-gcc/bin/arm-eabi-
 }
 
 checkenv () {
-	if [[ $ARCH != "arm" ]] || [[ $SUBARCH != "arm" ]] || [[ $CROSS_COMPILE != "/run/media/tfonda/HDD/android/arm32-gcc/bin/arm-eabi-" ]]; then
+	if [[ $ARCH != "arm" ]] || [[ $SUBARCH != "arm" ]] || [[ $CROSS_COMPILE != "../../arm32-gcc/bin/arm-eabi-" ]]; then
 		echo "Environment variables are unset!"
 		return 1
 	fi
@@ -86,6 +86,7 @@ build () {
 		return 1
 	fi
 	echo "Running make..."
+	make --version
 	make -j$1
 	../dtbToolCM -2 -o ../AnyKernel3/dt -s 2048 -p scripts/dtc/ arch/arm/boot/
 }
