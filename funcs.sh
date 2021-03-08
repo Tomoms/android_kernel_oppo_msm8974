@@ -92,10 +92,11 @@ build () {
 }
 
 mkzip () {
-	if [ -z "$1" ]; then
-		echo "Name of zip file is missing!"
-		return 1
-	fi
 	cp arch/arm/boot/zImage ../AnyKernel3/
-	(cd ../AnyKernel3 && zip -r ../$1 *)
+	(cd ../AnyKernel3 && zip -r ../kernel_Tom_`date +%Y%m%d`.zip *)
+	printf "Sideload zip? [Y/n]"
+	read answer
+	if [[ $answer != "n" ]]; then
+		adb sideload ../kernel_Tom_`date +%Y%m%d`.zip
+	fi
 }
