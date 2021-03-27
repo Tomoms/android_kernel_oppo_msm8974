@@ -1012,7 +1012,7 @@ static void dwc3_otg_sm_work(struct work_struct *w)
 					break;
 				case DWC3_SDP_CHARGER:
 					/* OPPO 2013-10-05 wangjc Add begin for support non-standard charger, HW_VERSION__12 is dvt */
-#ifdef CONFIG_MACH_MSM8974_14001
+#ifdef CONFIG_MACH_OPPO_MSM8974
 #if defined(CONFIG_OPPO_DEVICE_FIND7) || defined(CONFIG_OPPO_DEVICE_FIND7WX)
 					if(get_pcb_version() < HW_VERSION__12) {
 						cancel_delayed_work_sync(&dotg->non_standard_charger_work);
@@ -1036,7 +1036,7 @@ static void dwc3_otg_sm_work(struct work_struct *w)
 					break;
 				case DWC3_FLOATED_CHARGER:
 					/* OPPO 2013-10-05 wangjc Modify begin for support non-standard charger */
-#ifndef CONFIG_MACH_MSM8974_14001
+#ifndef CONFIG_MACH_OPPO_MSM8974
 					if (dotg->charger_retry_count <
 						max_chgr_retry_count)
 						dotg->charger_retry_count++;
@@ -1068,7 +1068,7 @@ static void dwc3_otg_sm_work(struct work_struct *w)
 				default:
 					dev_dbg(phy->dev, "chg_det started\n");
 					/* OPPO 2013-11-18 wangjc Modify begin for detect charger type later */
-#ifndef CONFIG_MACH_MSM8974_14001
+#ifndef CONFIG_MACH_OPPO_MSM8974
 					charger->start_detection(charger, true);
 #else
 					/* jingchun.wang@Onlinerd.Driver, 2014/02/24  Add for solve usb reboot problem */
@@ -1108,7 +1108,7 @@ static void dwc3_otg_sm_work(struct work_struct *w)
 				acaenabled = 0;
 			}
 			/* OPPO 2013-12-01 wangjc Add begin for for non standard charger detect, HW_VERSION__12 is dvt */
-#ifdef CONFIG_MACH_MSM8974_14001
+#ifdef CONFIG_MACH_OPPO_MSM8974
 			//#ifdef CONFIG_OPPO_DEVICE_FIND7
 #if defined(CONFIG_OPPO_DEVICE_FIND7) || defined(CONFIG_OPPO_DEVICE_FIND7WX)
 			if(get_pcb_version() < HW_VERSION__12) {
@@ -1117,10 +1117,10 @@ static void dwc3_otg_sm_work(struct work_struct *w)
 #endif
 #endif
 			/* OPPO 2013-12-01 wangjc Add end */
-#ifdef CONFIG_MACH_MSM8974_14001
+#ifdef CONFIG_MACH_OPPO_MSM8974
 			/* jingchun.wang@Onlinerd.Driver, 2014/01/06  Add for solve usb reboot problem */
 			cancel_delayed_work_sync(&dotg->detect_work);
-#endif /*CONFIG_MACH_MSM8974_14001*/
+#endif /*CONFIG_MACH_OPPO_MSM8974*/
 			charger->start_detection(dotg->charger, false);
 
 			dotg->charger_retry_count = 0;
