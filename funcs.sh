@@ -2,11 +2,11 @@
 setenv () {
 	export ARCH=arm
 	export SUBARCH=arm
-	export CROSS_COMPILE=../../lineage-17.1/prebuilts/gcc/linux-x86/arm/arm32-gcc/bin/arm-eabi-
+	export CROSS_COMPILE=/mnt/nvme/bacon/lineage-18.1/prebuilts/gcc/linux-x86/arm/arm32-gcc/bin/arm-eabi-
 }
 
 checkenv () {
-	if [[ $ARCH != "arm" ]] || [[ $SUBARCH != "arm" ]] || [[ $CROSS_COMPILE != "../../lineage-17.1/prebuilts/gcc/linux-x86/arm/arm32-gcc/bin/arm-eabi-" ]]; then
+	if [[ $ARCH != "arm" ]] || [[ $SUBARCH != "arm" ]] || [[ $CROSS_COMPILE != "/mnt/nvme/bacon/lineage-18.1/prebuilts/gcc/linux-x86/arm/arm32-gcc/bin/arm-eabi-" ]]; then
 		echo "Environment variables are unset!"
 		return 1
 	fi
@@ -56,9 +56,7 @@ editcfg () {
 	fi
 	if [ -f ".config" ]; then
 		echo ".config exists"
-		patch -p1 < 0001-temp-to-build-on-SUSE.patch
 		make nconfig
-		git checkout scripts/kconfig/nconf.c
 	else
 		echo ".config not found, run mkcfg first!"
 		return 1
@@ -86,7 +84,6 @@ build () {
 		return 1
 	fi
 	echo "Running make..."
-	make --version
 	make -j$1
 	../dtbToolCM -2 -o ../AnyKernel3/dt -s 2048 -p scripts/dtc/ arch/arm/boot/
 }
