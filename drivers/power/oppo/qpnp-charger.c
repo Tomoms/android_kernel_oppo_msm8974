@@ -39,6 +39,7 @@
 #include <linux/gpio.h>
 #include <linux/notifier.h>
 #include <linux/pcb_version.h>
+#include <linux/proc_fs.h>
 #include <linux/qpnp-charger-oppo.h>
 #endif
 
@@ -1707,6 +1708,28 @@ qpnp_chg_set_appropriate_vddmax(struct qpnp_chg_chip *chip)
 #endif /* CONFIG_MACH_OPPO */
 
 #ifdef CONFIG_BATTERY_BQ27541_OPPO
+static int
+get_prop_battery_cc(struct qpnp_chg_chip *chip)
+{
+	if (qpnp_batt_gauge && qpnp_batt_gauge->get_batt_cc)
+		return qpnp_batt_gauge->get_batt_cc();
+	else {
+		pr_err("qpnp-charger no batt gauge assuming false\n");
+		return false;
+	}
+}
+
+static int
+get_prop_battery_fcc(struct qpnp_chg_chip *chip)
+{
+	if (qpnp_batt_gauge && qpnp_batt_gauge->get_batt_fcc)
+		return qpnp_batt_gauge->get_batt_fcc();
+	else {
+		pr_err("qpnp-charger no batt gauge assuming false\n");
+		return false;
+	}
+}
+
 static int
 get_prop_authenticate(struct qpnp_chg_chip *chip)
 {
@@ -7004,6 +7027,90 @@ static int fb_notifier_callback(struct notifier_block *self,
 }
 #endif /*CONFIG_FB*/
 
+static ssize_t write_charger(struct file *file, const char __user *buf,
+		size_t count, loff_t *ppos)
+{
+	if (count) {
+		long val = simple_strtol(buf, NULL, 10);
+
+		if (val == 1) {
+			pr_info("allow charger\n");
+			qpnp_chg_usb_suspend_enable(g_chip, 0);
+			qpnp_chg_charge_en(g_chip, !g_chip->charging_disabled);
+			qpnp_start_charging(g_chip);
+		} else {
+			pr_info("not allow charger\n");
+			qpnp_chg_usb_suspend_enable(g_chip, 1);
+			qpnp_chg_iusbmax_set(g_chip, QPNP_CHG_I_MAX_MIN_100);
+			qpnp_chg_charge_en(g_chip, 0);
+		}
+	}
+
+	return count;
+}
+
+static const struct file_operations proc_charger_operations = {
+	.write		= write_charger,
+	.llseek		= noop_llseek,
+};
+
+static void charger_init_procfs(void)
+{
+	if (!proc_create("charger", S_IWUSR | S_IWGRP, NULL,
+			&proc_charger_operations))
+		pr_err("Failed to register proc interface\n");
+}
+
+static ssize_t read_batter_cc(struct file *file, char __user *buf,
+		size_t count, loff_t *ppos)
+{
+	size_t ret = 0;
+	char buffer[16] = {0};
+
+	if (!g_chip)
+		return ret;
+	sprintf(buffer, "%d\n", get_prop_battery_cc(g_chip));
+	return simple_read_from_buffer(buf, count, ppos, buffer,
+			strlen(buffer));
+}
+
+static const struct file_operations proc_batt_cc_operations = {
+	.read		= read_batter_cc,
+	.llseek		= default_llseek,
+};
+
+static void battery_cc_init_procfs(void)
+{
+	if (!proc_create("batt_cc", S_IRUSR | S_IRGRP | S_IROTH, NULL,
+			&proc_batt_cc_operations))
+		pr_err("Failed to register batt_cc proc interface\n");
+}
+
+static ssize_t read_batter_fcc(struct file *file, char __user *buf,
+		size_t count, loff_t *ppos)
+{
+	size_t ret = 0;
+	char buffer[16] = {0};
+
+	if (!g_chip)
+		return ret;
+	sprintf(buffer, "%dmAh\n", get_prop_battery_fcc(g_chip));
+	return simple_read_from_buffer(buf, count, ppos, buffer,
+			strlen(buffer));
+}
+
+static const struct file_operations proc_batt_fcc_operations = {
+	.read		= read_batter_fcc,
+	.llseek		= default_llseek,
+};
+
+static void battery_fcc_init_procfs(void)
+{
+	if (!proc_create("batt_fcc", S_IRUSR | S_IRGRP | S_IROTH, NULL,
+			&proc_batt_fcc_operations))
+		pr_err("Failed to register batt_fcc proc interface\n");
+}
+
 #endif /* CONFIG_MACH_OPPO */
 
 static int __devinit
@@ -7414,6 +7521,9 @@ qpnp_charger_probe(struct spmi_device *spmi)
 					__func__, rc);
 		device_remove_file(chip->dev, &dev_attr_test_chg_vol);
 	}
+	charger_init_procfs();
+	battery_cc_init_procfs();
+	battery_fcc_init_procfs();
 #endif /* CONFIG_MACH_OPPO */
 
 	pr_info("success chg_dis = %d, bpd = %d, usb = %d, dc = %d b_health = %d batt_present = %d\n",
