@@ -510,6 +510,9 @@ struct qpnp_chg_chip {
 #endif
 };
 
+#ifdef CONFIG_MACH_OPPO
+struct qpnp_chg_chip *g_chip;
+#endif
 
 static struct of_device_id qpnp_charger_match_table[] = {
 	{ .compatible = QPNP_CHARGER_DEV_NAME, },
@@ -7133,6 +7136,9 @@ qpnp_charger_probe(struct spmi_device *spmi)
 	chip->fake_battery_soc = -EINVAL;
 	chip->dev = &(spmi->dev);
 	chip->spmi = spmi;
+#ifdef CONFIG_MACH_OPPO
+	g_chip = chip;
+#endif
 
 	chip->usb_psy = power_supply_get_by_name("usb");
 	if (!chip->usb_psy) {
@@ -7480,6 +7486,7 @@ qpnp_charger_probe(struct spmi_device *spmi)
 #endif
 #ifdef CONFIG_MACH_OPPO
 	qpnp_charge_info_init(chip);
+	g_chip = chip;
 
 	INIT_DELAYED_WORK(&chip->update_heartbeat_work,
 							update_heartbeat);
