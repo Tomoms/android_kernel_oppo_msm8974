@@ -377,6 +377,7 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
+		   -Wno-misleading-indentation \
 		   -fno-delete-null-pointer-checks
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
@@ -580,8 +581,7 @@ KBUILD_CFLAGS	+=	-Wno-address-of-packed-member
 
 KBUILD_CFLAGS	+=	-mcpu=cortex-a15 \
 			-mfpu=neon-vfpv4 \
-			-funsafe-math-optimizations \
-			-fno-tree-vectorize
+			-fsingle-precision-constant
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= -Os
@@ -622,6 +622,8 @@ KBUILD_CFLAGS   += $(call cc-option, -fno-var-tracking-assignments)
 ifdef CONFIG_DEBUG_INFO
 KBUILD_CFLAGS	+= -g
 KBUILD_AFLAGS	+= -gdwarf-2
+else
+KBUILD_CFLAGS	+= -g0
 endif
 
 ifdef CONFIG_DEBUG_INFO_REDUCED
