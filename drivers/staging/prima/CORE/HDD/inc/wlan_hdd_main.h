@@ -1722,7 +1722,7 @@ static inline void hdd_init_ll_stats_ctx(hdd_context_t *hdd_ctx)
      return;
 }
 #else
-static inline void hdd_init_ll_stat_ctx(void)
+static inline void hdd_init_ll_stats_ctx(hdd_context_t *hdd_ctx)
 {
     return;
 }
