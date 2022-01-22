@@ -47,21 +47,21 @@ int wlan_logging_flush_pkt_queue(void);
 int wlan_logging_sock_deactivate_svc(void);
 int wlan_log_to_user(VOS_TRACE_LEVEL log_level, char *to_be_sent, int length);
 int wlan_queue_logpkt_for_app(vos_pkt_t *pPacket, uint32 pkt_type);
-static inline void wlan_process_done_indication(uint8 type, uint32 reason_code) {}
+void wlan_process_done_indication(uint8 type, uint32 reason_code);
 
 void wlan_init_log_completion(void);
-static inline int wlan_set_log_completion(uint32 is_fatal,
+int wlan_set_log_completion(uint32 is_fatal,
                             uint32 indicator,
-                            uint32 reason_code) { return 0; }
-static inline void wlan_get_log_completion(uint32 *is_fatal,
+                            uint32 reason_code);
+void wlan_get_log_completion(uint32 *is_fatal,
                              uint32 *indicator,
-                             uint32 *reason_code) {}
-static inline bool wlan_is_log_report_in_progress(void) { return 0; }
-static inline void wlan_reset_log_report_in_progress(void) {}
+                             uint32 *reason_code);
+bool wlan_is_log_report_in_progress(void);
+void wlan_reset_log_report_in_progress(void);
 
 void wlan_deinit_log_completion(void);
 
-static inline void wlan_logging_set_log_level(void) {}
+void wlan_logging_set_log_level(void);
 
 bool wlan_is_logger_thread(int threadId);
 #endif /* WLAN_LOGGING_SOCK_SVC_H */
