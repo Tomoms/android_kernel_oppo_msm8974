@@ -44,7 +44,13 @@ mkcfg () {
 		make oldconfig
 	else
 		echo ".config not found"
-		make lineageos_bacon_defconfig
+		if [[ "${1}" == "twrp" ]]; then
+			echo "Using twrp's defconfig"
+			make twrp_bacon_defconfig
+		else
+			echo "Using lineageos's defconfig"
+			make lineageos_bacon_defconfig
+		fi
 	fi
 }
 
@@ -70,7 +76,11 @@ savecfg () {
 		return 1
 	fi
 	make savedefconfig
-	mv defconfig arch/arm/configs/lineageos_bacon_defconfig
+	if [[ "${1}" == "twrp" ]]; then
+		mv defconfig arch/arm/configs/twrp_bacon_defconfig
+	else
+		mv defconfig arch/arm/configs/lineageos_bacon_defconfig
+	fi
 }
 
 build () {
