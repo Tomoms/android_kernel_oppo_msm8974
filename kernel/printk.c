@@ -65,6 +65,9 @@ void asmlinkage __attribute__((weak)) early_printk(const char *fmt, ...)
 
 DECLARE_WAIT_QUEUE_HEAD(log_wait);
 
+static __read_mostly bool enabled;
+module_param(enabled, bool, S_IRUGO | S_IWUSR);
+
 int console_printk[4] = {
 	DEFAULT_CONSOLE_LOGLEVEL,	/* console_loglevel */
 	DEFAULT_MESSAGE_LOGLEVEL,	/* default_message_loglevel */
@@ -1491,6 +1494,9 @@ asmlinkage int vprintk_emit(int facility, int level,
 	int this_cpu;
 	int printed_len = 0;
 
+	if (!enabled)
+		return 0;
+
 	boot_delay_msec();
 	printk_delay();
 
@@ -1616,6 +1622,8 @@ EXPORT_SYMBOL(vprintk_emit);
 
 asmlinkage int vprintk(const char *fmt, va_list args)
 {
+	if (!enabled)
+		return 0;
 	return vprintk_emit(0, -1, NULL, 0, fmt, args);
 }
 
@@ -1626,6 +1634,9 @@ asmlinkage int printk_emit(int facility, int level,
 {
 	va_list args;
 	int r;
+
+	if (!enabled)
+		return 0;
 
 	va_start(args, fmt);
 	r = vprintk_emit(facility, level, dict, dictlen, fmt, args);
@@ -1660,6 +1671,9 @@ asmlinkage int printk(const char *fmt, ...)
 {
 	va_list args;
 	int r;
+
+	if (!enabled)
+		return 0;
 
 #ifdef CONFIG_KGDB_KDB
 	if (unlikely(kdb_trap_printk)) {
