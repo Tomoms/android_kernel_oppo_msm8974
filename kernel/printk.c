@@ -65,7 +65,7 @@ void asmlinkage __attribute__((weak)) early_printk(const char *fmt, ...)
 
 DECLARE_WAIT_QUEUE_HEAD(log_wait);
 
-static __read_mostly bool enabled = 1;
+static __read_mostly bool enabled;
 module_param(enabled, bool, S_IRUGO | S_IWUSR);
 
 int console_printk[4] = {
