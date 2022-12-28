@@ -2,11 +2,11 @@
 setenv () {
 	export ARCH=arm
 	export SUBARCH=arm
-	export CROSS_COMPILE=/mnt/nvme/bacon/lineage-18.1/prebuilts/gcc/linux-x86/arm/arm32-gcc/bin/arm-eabi-
+	export CROSS_COMPILE=/mnt/data/android/eva-gcc-arm/bin/arm-eabi-
 }
 
 checkenv () {
-	if [[ $ARCH != "arm" ]] || [[ $SUBARCH != "arm" ]] || [[ $CROSS_COMPILE != "/mnt/nvme/bacon/lineage-18.1/prebuilts/gcc/linux-x86/arm/arm32-gcc/bin/arm-eabi-" ]]; then
+	if [[ $ARCH != "arm" ]] || [[ $SUBARCH != "arm" ]] || [[ $CROSS_COMPILE != "/mnt/data/android/eva-gcc-arm/bin/arm-eabi-" ]]; then
 		echo "Environment variables are unset!"
 		return 1
 	fi
